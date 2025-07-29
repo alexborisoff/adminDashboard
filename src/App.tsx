@@ -3,28 +3,25 @@ import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { UsersPage } from './pages/UsersPage';
 import { PrivateRoute } from './components/PrivateRoute';
+import { Layout } from './components/Layout';
 
 export const App = () => {
    return (
       <Routes>
          <Route path="/login" element={<LoginPage />} />
          <Route
-            path="/dashboard"
+            path="/"
             element={
                <PrivateRoute>
-                  <DashboardPage />
+                  <Layout />
                </PrivateRoute>
             }
-         />
-         <Route
-            path="/users"
-            element={
-               <PrivateRoute>
-                  <UsersPage />
-               </PrivateRoute>
-            }
-         />
-         <Route path="*" element={<Navigate to="/dashboard" replace />} />
+         >
+            <Route element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="users" element={<UsersPage />} />
+         </Route>
+         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
    );
 };
