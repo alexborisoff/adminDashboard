@@ -25,14 +25,17 @@ export const Layout = () => {
                <NavLink to="/users" className={navLinkClass}>
                   Users
                </NavLink>
-               <button onClick={handleLogout} className="text-left hover:text-red-400">
+               <button
+                  onClick={handleLogout}
+                  className="text-left hover:text-red-400 cursor-pointer"
+               >
                   Logout
                </button>
             </nav>
          </aside>
          <main className="flex-1 p-6 overflow-y-auto">
-            <header className="mb-4 border-b pb-2">
-               <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
+            <header className="mb-4 border-b-2 pb-2">
+               <h1 className="text-2xl font-semibold">MotorGroup Inc.</h1>
             </header>
             <Outlet />
          </main>
