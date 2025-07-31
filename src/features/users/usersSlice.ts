@@ -9,32 +9,32 @@ export interface User {
 }
 
 interface UserState {
-   users: User[];
+   usersList: User[];
 }
 
 const initialState: UserState = {
-   users: [],
+   usersList: [],
 };
 
 const usersSlice = createSlice({
-   name: 'users',
+   name: 'usersList',
    initialState,
    reducers: {
       addUser: (state, action: PayloadAction<Omit<User, 'id' | 'createdAt'>>) => {
-         state.users.push({
+         state.usersList.push({
             id: uuidv4(),
             createdAt: new Date().toISOString(),
             ...action.payload,
          });
       },
       updateUser: (state, action: PayloadAction<User>) => {
-         const index = state.users.findIndex(user => user.id === action.payload.id);
+         const index = state.usersList.findIndex(user => user.id === action.payload.id);
          if (index !== -1) {
-            state.users[index] = action.payload;
+            state.usersList[index] = action.payload;
          }
       },
       deleteUser: (state, action: PayloadAction<string>) => {
-         state.users = state.users.filter(user => user.id !== action.payload);
+         state.usersList = state.usersList.filter(user => user.id !== action.payload);
       },
    },
 });
