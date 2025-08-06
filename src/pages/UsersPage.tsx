@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/useApp';
-import { addUser, updateUser, deleteUser } from '../features/users/usersSlice';
+import { addUser, updateUser, deleteUser, type User } from '../features/users/usersSlice';
 import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -15,7 +15,8 @@ export const UsersPage = () => {
    const [isModalEditable, setIsModalEditable] = useState<boolean>(false);
    const [editUserId, setEditUserId] = useState<string | null>(null);
    const [editName, setEditName] = useState<string>('');
-   const [editAge, setEditAge] = useState<string>('');
+   const [editAge, setEditAge] = useState<number>(0);
+   const [editCreatedAt, setEditCreatedAt] = useState<string>('');
 
    const handleAddUser = () => {
       const ageNum = Number(age);
@@ -31,26 +32,27 @@ export const UsersPage = () => {
       message.success('User was deleted');
    };
 
-   const handleEdit = (record: any) => {
+   const handleEdit = (record: User) => {
       setEditUserId(record.id);
       setEditName(record.name);
       setEditAge(record.age);
+      setEditCreatedAt(record.createdAt);
       setIsModalEditable(true);
    };
 
    const handleUpdateUser = () => {
-      const ageNum = Number(editAge);
+      const ageNum = +(editAge);
       if (!editName || isNaN(ageNum) || ageNum < 0 || ageNum > 100 || /\d/.test(editName)) {
          message.error('Please enter valid name/age');
          return;
       }
       if (editUserId) {
-         dispatch(updateUser({ id: editUserId, name: editName, age: ageNum, createdAt: '' })); //check syntax
+         dispatch(updateUser({ id: editUserId, name: editName, age: ageNum, createdAt: editCreatedAt })); //check syntax
          message.success('User was updated!');
          setIsModalEditable(false);
          setEditUserId(null);
          setEditName('');
-         setEditAge('');
+         setEditAge(0);
       }
    };
 
@@ -139,7 +141,7 @@ export const UsersPage = () => {
                   <Input
                      type="number"
                      value={editAge}
-                     onChange={e => setEditAge(e.target.value)}
+                     onChange={e => setEditAge(+e.target.value)}
                      placeholder="Age"
                   />
                </Form.Item>
