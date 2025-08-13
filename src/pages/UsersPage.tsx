@@ -11,6 +11,7 @@ export const UsersPage = () => {
 
    const [name, setName] = useState<string>('');
    const [age, setAge] = useState<string>('');
+   const [searchField, setSerchField] = useState<string>('');
 
    const [isModalEditable, setIsModalEditable] = useState<boolean>(false);
    const [editUserId, setEditUserId] = useState<string | null>(null);
@@ -58,6 +59,15 @@ export const UsersPage = () => {
       }
    };
 
+   const filtredUsers = users.filter(user => {
+      const search = searchField.toLowerCase();
+      return (
+         user.name.toLowerCase().includes(search) ||
+         user.age.toString().includes(search) ||
+         new Date(user.createdAt).toLocaleDateString().includes(search)
+      );
+   });
+
    const columns: ColumnsType<(typeof users)[number]> = [
       {
          title: 'Name',
@@ -101,6 +111,12 @@ export const UsersPage = () => {
 
          <div className="space-x-2">
             <input
+               value={searchField}
+               onChange={e => setSerchField(e.target.value)}
+               placeholder="Search users..."
+               className="border-b-3 max-w-xs focus:border-0"
+            />
+            <input
                type="text"
                value={name}
                onChange={e => setName(e.target.value)}
@@ -122,7 +138,7 @@ export const UsersPage = () => {
             </button>
          </div>
 
-         <Table columns={columns} dataSource={users} rowKey="id" pagination={false} />
+         <Table columns={columns} dataSource={filtredUsers} rowKey="id" pagination={false} />
 
          <Modal
             title="Edit User"
