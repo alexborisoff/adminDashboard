@@ -29,7 +29,7 @@ export const UsersPage = () => {
 
    const handleDeleteUser = (id: string) => {
       dispatch(deleteUser(id));
-      message.success('User was deleted');
+      alert('User was deleted');
    };
 
    const handleEdit = (record: User) => {
@@ -41,13 +41,15 @@ export const UsersPage = () => {
    };
 
    const handleUpdateUser = () => {
-      const ageNum = +(editAge);
+      const ageNum = +editAge;
       if (!editName || isNaN(ageNum) || ageNum < 0 || ageNum > 100 || /\d/.test(editName)) {
          message.error('Please enter valid name/age');
          return;
       }
       if (editUserId) {
-         dispatch(updateUser({ id: editUserId, name: editName, age: ageNum, createdAt: editCreatedAt })); //check syntax
+         dispatch(
+            updateUser({ id: editUserId, name: editName, age: ageNum, createdAt: editCreatedAt })
+         );
          message.success('User was updated!');
          setIsModalEditable(false);
          setEditUserId(null);
@@ -114,7 +116,7 @@ export const UsersPage = () => {
             />
             <button
                onClick={handleAddUser}
-               className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
+               className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer"
             >
                Add User
             </button>
