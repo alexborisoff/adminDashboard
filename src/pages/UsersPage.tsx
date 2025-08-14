@@ -59,6 +59,8 @@ export const UsersPage = () => {
       }
    };
 
+   const uniqueAge = Array.from(new Set(users.map(unique => unique.age))).sort((a, b) => a - b);
+
    const filtredUsers = users.filter(user => {
       const search = searchField.toLowerCase();
       return (
@@ -80,11 +82,13 @@ export const UsersPage = () => {
          dataIndex: 'age',
          key: 'age',
          sorter: (a, b) => a.age - b.age,
+         filters: uniqueAge.map(age => ({ text: age.toString(), value: age })),
+         onFilter: (value, record) => record.age === value,
       },
       {
-         title: 'Create At',
+         title: 'Created At',
          dataIndex: 'createdAt',
-         key: 'createAt',
+         key: 'createdAt',
          render: text => new Date(text).toLocaleString(),
          sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       },
