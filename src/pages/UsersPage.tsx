@@ -4,6 +4,7 @@ import { addUser, updateUser, deleteUser, type User } from '../features/users/us
 import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import { exportToCSV, exportToExcel } from '../utils/exportUtils';
 
 export const UsersPage = () => {
    const users = useAppSelector(state => state.users.usersList);
@@ -140,6 +141,10 @@ export const UsersPage = () => {
             >
                Add User
             </button>
+            <Button onClick={() => exportToCSV(filtredUsers)}>Export to CSV-file</Button>
+            <Button type="primary" onClick={() => exportToExcel(filtredUsers)}>
+               Export Excel-file
+            </Button>
          </div>
 
          <Table columns={columns} dataSource={filtredUsers} rowKey="id" pagination={false} />
