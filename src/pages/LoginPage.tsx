@@ -12,13 +12,13 @@ export const LoginPage = () => {
    };
 
    return (
-      <div className="p-4 text-center">
-         <h2 className="text-2xl mb-4">Login Page</h2>
+      <div className="w-screen h-screen flex flex-col items-center justify-center">
+         <h2 className="text-xl mb-4">Welcome, push Login button to Log In</h2>
          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 cursor-pointer"
+            className="px-4 py-2 w-[15%] h-[7vh] bg-blue-600 text-white text-xl rounded-3xl hover:bg-blue-700 cursor-pointer"
             onClick={handleLogin}
          >
-            Login
+            Log In
          </button>
       </div>
    );

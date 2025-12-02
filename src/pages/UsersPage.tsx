@@ -119,21 +119,21 @@ export const UsersPage = () => {
                value={searchField}
                onChange={e => setSerchField(e.target.value)}
                placeholder="Search users..."
-               className="border-b-3 max-w-xs focus:border-0"
+               className="border-b-3 max-w-xs focus:border-b-1 focus:outline-0"
             />
             <input
                type="text"
                value={name}
                onChange={e => setName(e.target.value)}
                placeholder="Name"
-               className="border px-2 py-1"
+               className="border px-2 py-1 focus:outline-0 rounded-lg"
             />
             <input
                type="number"
                value={age}
                onChange={e => setAge(e.target.value)}
                placeholder="Age"
-               className="border px-2 py-1"
+               className="border px-2 py-1 focus:outline-0 rounded-xl"
             />
             <button
                onClick={handleAddUser}
