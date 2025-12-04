@@ -12,7 +12,7 @@ export const UsersPage = () => {
 
    const [name, setName] = useState<string>('');
    const [age, setAge] = useState<string>('');
-   const [searchField, setSerchField] = useState<string>('');
+   const [searchField, setSearchField] = useState<string>('');
 
    const [isModalEditable, setIsModalEditable] = useState<boolean>(false);
    const [editUserId, setEditUserId] = useState<string | null>(null);
@@ -117,7 +117,7 @@ export const UsersPage = () => {
          <div className="space-x-2">
             <input
                value={searchField}
-               onChange={e => setSerchField(e.target.value)}
+               onChange={e => setSearchField(e.target.value)}
                placeholder="Search users..."
                className="border-b-3 max-w-xs focus:border-b-1 focus:outline-0"
             />
