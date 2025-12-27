@@ -3,7 +3,7 @@ import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 
 interface SwitchThemeProps {
    darkMode: boolean;
-   setDarkMode: (darkMode: boolean) => void;
+   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const SwitchTheme = ({ darkMode, setDarkMode }: SwitchThemeProps) => {

@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
+import type { User } from '../features/users/usersSlice';
 
-export const exportToExcel = (data: any[]) => {
+export const exportToExcel = (data: User[]) => {
    const wsheet = XLSX.utils.json_to_sheet(data);
    const wbook = XLSX.utils.book_new();
    XLSX.utils.book_append_sheet(wbook, wsheet, 'Users');
