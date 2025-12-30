@@ -24,7 +24,7 @@ export interface User {
    createdAt: string;
 }
 
-interface UserState {
+export interface UserState {
    usersList: User[];
    total: number;
    loading: boolean;
@@ -39,7 +39,8 @@ const loadFromLocalStorage = (): User[] => {
    }
 };
 
-const saveToLocalStorage = (users: User[]) => {
+// Экспортируем функцию для использования в middleware
+export const saveUsersToLocalStorage = (users: User[]) => {
    localStorage.setItem('usersList', JSON.stringify(users));
 };
 
@@ -54,23 +55,21 @@ const usersSlice = createSlice({
    initialState,
    reducers: {
       addUser: (state, action: PayloadAction<Omit<User, 'id' | 'createdAt'>>) => {
+         // ✅ Чистый редьюсер: только обновление состояния, без сайд-эффектов
          state.usersList.push({
             id: uuidv4(),
             createdAt: new Date().toISOString(),
             ...action.payload,
          });
-         saveToLocalStorage(state.usersList);
       },
       updateUser: (state, action: PayloadAction<User>) => {
          const index = state.usersList.findIndex(user => user.id === action.payload.id);
          if (index !== -1) {
             state.usersList[index] = action.payload;
-            saveToLocalStorage(state.usersList);
          }
       },
       deleteUser: (state, action: PayloadAction<string>) => {
          state.usersList = state.usersList.filter(user => user.id !== action.payload);
-         saveToLocalStorage(state.usersList);
       },
    },
    extraReducers(builder) {
