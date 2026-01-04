@@ -72,7 +72,7 @@ export const LoginPage = () => {
                      { min: 8, message: 'Password must be at least 8 characters long' },
                   ]}
                >
-                  <Input.Password placeholder="Enter your password" size="large" />
+                  <Input.Password placeholder="Enter your password..." size="large" />
                </FormItem>
 
                <Form.Item>
