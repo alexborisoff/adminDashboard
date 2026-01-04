@@ -31,7 +31,7 @@ export const UsersPage = () => {
 
    const handleDeleteUser = (id: string) => {
       dispatch(deleteUser(id));
-      alert('User was deleted');
+      message.success('User was deleted');
    };
 
    const handleEdit = (record: User) => {
@@ -62,7 +62,7 @@ export const UsersPage = () => {
 
    const uniqueAge = Array.from(new Set(users.map(unique => unique.age))).sort((a, b) => a - b);
 
-   const filtredUsers = users.filter(user => {
+   const filteredUsers = users.filter(user => {
       const search = searchField.toLowerCase();
       return (
          user.name.toLowerCase().includes(search) ||
@@ -141,13 +141,13 @@ export const UsersPage = () => {
             >
                Add User
             </button>
-            <Button onClick={() => exportToCSV(filtredUsers)}>Export to CSV-file</Button>
-            <Button type="primary" onClick={() => exportToExcel(filtredUsers)}>
+            <Button onClick={() => exportToCSV(filteredUsers)}>Export to CSV-file</Button>
+            <Button type="primary" onClick={() => exportToExcel(filteredUsers)}>
                Export Excel-file
             </Button>
          </div>
 
-         <Table columns={columns} dataSource={filtredUsers} rowKey="id" pagination={false} />
+         <Table columns={columns} dataSource={filteredUsers} rowKey="id" pagination={false} />
 
          <Modal
             title="Edit User"

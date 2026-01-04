@@ -96,13 +96,17 @@ export const authSlice = createSlice({
          state.accessToken = accessToken;
          state.expiresAt = Date.now() + expiresIn * 1000;
       },
-      updatesUser: (state,action:PayloadAction<Partial<User>>) => {
+      updatesUser: (state, action: PayloadAction<Partial<User>>) => {
          if (state.user) {
-            state.user = {...state.user,...action.payload}
+            state.user = { ...state.user, ...action.payload };
          }
       },
       logout: state => {
          state.isAuthenticated = false;
+         state.user = null;
+         state.accessToken = null;
+         state.refreshToken = null;
+         state.expiresAt = null;
       },
    },
 });

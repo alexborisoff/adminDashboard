@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Form, Input, message } from 'antd';
 import { login, type User } from '../features/auth/authSlice';
-import FormItem from 'antd/es/form/FormItem';
 
-export interface Сredentials {
+export interface Credentials {
    email: string;
    password: string;
 }
@@ -16,7 +15,7 @@ export const LoginPage = () => {
    const navigate = useNavigate();
    const [loading, setLoading] = useState<boolean>(false);
 
-   const handleLogin = async (credentials: Сredentials) => {
+   const handleLogin = async (credentials: Credentials) => {
       setLoading(true);
       try {
          const mockUser: User = {
@@ -64,7 +63,7 @@ export const LoginPage = () => {
                   <Input placeholder="example@mail.com" size="large" />
                </Form.Item>
 
-               <FormItem
+               <Form.Item
                   label="Password"
                   name="password"
                   rules={[
@@ -73,7 +72,7 @@ export const LoginPage = () => {
                   ]}
                >
                   <Input.Password placeholder="Enter your password..." size="large" />
-               </FormItem>
+               </Form.Item>
 
                <Form.Item>
                   <Button type="primary" htmlType="submit" block loading={loading} size="large">
