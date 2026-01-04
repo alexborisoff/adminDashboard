@@ -39,7 +39,6 @@ const loadFromLocalStorage = (): User[] => {
    }
 };
 
-// Экспортируем функцию для использования в middleware
 export const saveUsersToLocalStorage = (users: User[]) => {
    localStorage.setItem('usersList', JSON.stringify(users));
 };
@@ -55,7 +54,6 @@ const usersSlice = createSlice({
    initialState,
    reducers: {
       addUser: (state, action: PayloadAction<Omit<User, 'id' | 'createdAt'>>) => {
-         // ✅ Чистый редьюсер: только обновление состояния, без сайд-эффектов
          state.usersList.push({
             id: uuidv4(),
             createdAt: new Date().toISOString(),
