@@ -1,5 +1,13 @@
 import { configureStore, createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
+import authReducer, {
+   login,
+   refreshAccessToken,
+   updatesUser,
+   logout,
+   type AuthState,
+   saveAuthToLocalStorage,
+   clearAuthFromLocalStorage,
+} from '../features/auth/authSlice';
 import usersReducer, {
    addUser,
    updateUser,
@@ -9,10 +17,23 @@ import usersReducer, {
    type UserState,
 } from '../features/users/usersSlice';
 
+const authSaveMiddleware = createListenerMiddleware();
+authSaveMiddleware.startListening({
+   matcher: isAnyOf(login, refreshAccessToken, updatesUser, logout),
+   effect: (_, listenerApi) => {
+      const state = listenerApi.getState() as { auth: AuthState };
+      if (state.auth.isAuthenticated) {
+         saveAuthToLocalStorage(state.auth);
+      } else {
+         clearAuthFromLocalStorage();
+      }
+   },
+});
+
 const usersSaveMiddleware = createListenerMiddleware();
 usersSaveMiddleware.startListening({
    matcher: isAnyOf(addUser, updateUser, deleteUser, fetchUsers.fulfilled),
-   effect: (action, listenerApi) => {
+   effect: (_, listenerApi) => {
       const state = listenerApi.getState() as { users: UserState };
       saveUsersToLocalStorage(state.users.usersList);
    },
@@ -24,7 +45,7 @@ export const store = configureStore({
       users: usersReducer,
    },
    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().prepend(usersSaveMiddleware.middleware),
+      getDefaultMiddleware().prepend(authSaveMiddleware.middleware,usersSaveMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
