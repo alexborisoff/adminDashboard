@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { STORAGE_KEYS, TOKEN_EXPIRATION } from '../../constants/validation';
 
-const AUTH_STORAGE_KEY = 'authState';
+const AUTH_STORAGE_KEY = STORAGE_KEYS.AUTH;
 
 export type UserRole = 'admin' | 'user' | 'moderator';
 
@@ -79,21 +80,23 @@ export const authSlice = createSlice({
    initialState,
    reducers: {
       login: (state, action: PayloadAction<LoginPayload>) => {
-         const { user, accessToken, refreshToken, expiresIn = 3600 } = action.payload;
+         const payload = action.payload;
+         const expiresIn = payload.expiresIn || TOKEN_EXPIRATION.DEFAULT;
          const expiresAt = Date.now() + expiresIn * 1000;
 
          state.isAuthenticated = true;
-         state.user = user;
-         state.accessToken = accessToken;
-         state.refreshToken = refreshToken || null;
+         state.user = payload.user;
+         state.accessToken = payload.accessToken;
+         state.refreshToken = payload.refreshToken || null;
          state.expiresAt = expiresAt;
       },
       refreshAccessToken: (
          state,
          action: PayloadAction<{ accessToken: string; expiresIn?: number }>
       ) => {
-         const { accessToken, expiresIn = 3600 } = action.payload;
-         state.accessToken = accessToken;
+         const payload = action.payload;
+         const expiresIn = payload.expiresIn || TOKEN_EXPIRATION.DEFAULT;
+         state.accessToken = payload.accessToken;
          state.expiresAt = Date.now() + expiresIn * 1000;
       },
       updatesUser: (state, action: PayloadAction<Partial<User>>) => {

@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/useApp';
 import { addUser, updateUser, deleteUser, type User } from '../features/users/usersSlice';
 import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { exportToCSV, exportToExcel } from '../utils/exportUtils';
+import { VALIDATION_RULES } from '../constants/validation';
+
+const validateName = (name: string): boolean => {
+   return name.length > 0 && VALIDATION_RULES.NAME_REGEX.test(name);
+};
+
+const validateAge = (age: number): boolean => {
+   return !isNaN(age) && age >= VALIDATION_RULES.MIN_AGE && age <= VALIDATION_RULES.MAX_AGE;
+};
 
 export const UsersPage = () => {
    const users = useAppSelector(state => state.users.usersList);
@@ -20,31 +29,34 @@ export const UsersPage = () => {
    const [editAge, setEditAge] = useState<number>(0);
    const [editCreatedAt, setEditCreatedAt] = useState<string>('');
 
-   const handleAddUser = () => {
+   const handleAddUser = useCallback(() => {
       const ageNum = Number(age);
-      if (name && age && !isNaN(ageNum) && ageNum >= 0 && ageNum <= 100 && /^[^\d]+$/.test(name)) {
+      if (name && age && validateName(name) && validateAge(ageNum)) {
          dispatch(addUser({ name, age: ageNum }));
          setName('');
          setAge('');
       }
-   };
+   }, [name, age, dispatch]);
 
-   const handleDeleteUser = (id: string) => {
-      dispatch(deleteUser(id));
-      message.success('User was deleted');
-   };
+   const handleDeleteUser = useCallback(
+      (id: string) => {
+         dispatch(deleteUser(id));
+         message.success('User was deleted');
+      },
+      [dispatch]
+   );
 
-   const handleEdit = (record: User) => {
+   const handleEdit = useCallback((record: User) => {
       setEditUserId(record.id);
       setEditName(record.name);
       setEditAge(record.age);
       setEditCreatedAt(record.createdAt);
       setIsModalEditable(true);
-   };
+   }, []);
 
-   const handleUpdateUser = () => {
-      const ageNum = +editAge;
-      if (!editName || isNaN(ageNum) || ageNum < 0 || ageNum > 100 || /\d/.test(editName)) {
+   const handleUpdateUser = useCallback(() => {
+      const ageNum = editAge;
+      if (!validateName(editName) || !validateAge(ageNum)) {
          message.error('Please enter valid name/age');
          return;
       }
@@ -58,57 +70,67 @@ export const UsersPage = () => {
          setEditName('');
          setEditAge(0);
       }
-   };
+   }, [editUserId, editName, editAge, editCreatedAt, dispatch]);
 
-   const uniqueAge = Array.from(new Set(users.map(unique => unique.age))).sort((a, b) => a - b);
+   const uniqueAge = useMemo(() => {
+      return Array.from(new Set(users.map(user => user.age))).sort((a, b) => a - b);
+   }, [users]);
 
-   const filteredUsers = users.filter(user => {
+   const filteredUsers = useMemo(() => {
+      if (!searchField.trim()) {
+         return users;
+      }
       const search = searchField.toLowerCase();
-      return (
-         user.name.toLowerCase().includes(search) ||
-         user.age.toString().includes(search) ||
-         new Date(user.createdAt).toLocaleDateString().includes(search)
-      );
-   });
+      return users.filter(user => {
+         return (
+            user.name.toLowerCase().includes(search) ||
+            user.age.toString().includes(search) ||
+            new Date(user.createdAt).toLocaleDateString().toLowerCase().includes(search)
+         );
+      });
+   }, [users, searchField]);
 
-   const columns: ColumnsType<(typeof users)[number]> = [
-      {
-         title: 'Name',
-         dataIndex: 'name',
-         key: 'name',
-         sorter: (a, b) => a.name.localeCompare(b.name),
-      },
-      {
-         title: 'Age',
-         dataIndex: 'age',
-         key: 'age',
-         sorter: (a, b) => a.age - b.age,
-         filters: uniqueAge.map(age => ({ text: age.toString(), value: age })),
-         onFilter: (value, record) => record.age === value,
-      },
-      {
-         title: 'Created At',
-         dataIndex: 'createdAt',
-         key: 'createdAt',
-         render: text => new Date(text).toLocaleString(),
-         sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      },
-      {
-         title: 'Actions',
-         key: 'actions',
-         render: (_, record) => (
-            <Space>
-               <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)} />
-               <Button
-                  icon={<DeleteOutlined />}
-                  type="link"
-                  danger
-                  onClick={() => handleDeleteUser(record.id)}
-               />
-            </Space>
-         ),
-      },
-   ];
+   const columns: ColumnsType<User> = useMemo(
+      () => [
+         {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
+         },
+         {
+            title: 'Age',
+            dataIndex: 'age',
+            key: 'age',
+            sorter: (a, b) => a.age - b.age,
+            filters: uniqueAge.map(age => ({ text: age.toString(), value: age })),
+            onFilter: (value, record) => record.age === value,
+         },
+         {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: text => new Date(text).toLocaleString(),
+            sorter: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+         },
+         {
+            title: 'Actions',
+            key: 'actions',
+            render: (_, record) => (
+               <Space>
+                  <Button icon={<EditOutlined />} type="link" onClick={() => handleEdit(record)} />
+                  <Button
+                     icon={<DeleteOutlined />}
+                     type="link"
+                     danger
+                     onClick={() => handleDeleteUser(record.id)}
+                  />
+               </Space>
+            ),
+         },
+      ],
+      [handleEdit, handleDeleteUser, uniqueAge]
+   );
 
    return (
       <div className="space-y-4">

@@ -45,7 +45,7 @@ export const store = configureStore({
       users: usersReducer,
    },
    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware().prepend(authSaveMiddleware.middleware,usersSaveMiddleware.middleware),
+      getDefaultMiddleware().prepend(authSaveMiddleware.middleware, usersSaveMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
