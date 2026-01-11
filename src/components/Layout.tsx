@@ -40,7 +40,7 @@ export const Layout = () => {
                </NavLink>
                <button
                   onClick={handleLogout}
-                  className="text-left hover:text-red-400 transition-colors duration-500 cursor-pointer mt-4"
+                  className="absolute bottom-4 font-semibold text-red-600 hover:text-red-400 transition-colors duration-500 cursor-pointer "
                >
                   Logout
                </button>
